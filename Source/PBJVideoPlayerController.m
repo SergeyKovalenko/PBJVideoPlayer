@@ -22,80 +22,106 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#import "PBJVideoPlayerController.h"
+#import <AVFoundation/AVFoundation.h>
 #import "PBJVideoView.h"
+#import "PBJVideoPlayer.h"
+#import "PBJVideoPlayerController.h"
 
-@interface PBJVideoPlayerController () <
-    UIGestureRecognizerDelegate>
-{
-}
+@interface PBJVideoPlayerController ()
 
+@property (nonatomic, strong) PBJVideoView *videoView;
+@property (nonatomic, readwrite) UITapGestureRecognizer *playbackGesture;
 @end
 
 @implementation PBJVideoPlayerController
 
-#pragma mark - init
-
-- (void)dealloc
-{
-    _player = nil;
-}
+@synthesize player = _player;
 
 #pragma mark - view lifecycle
 
 - (void)loadView
 {
-    self.view = _player.videoView;
+    CGRect frame = [[UIScreen mainScreen] applicationFrame];
+    self.view = [[UIView alloc] initWithFrame:frame];
+    self.videoView = [[PBJVideoView alloc] initWithFrame:frame];
+    self.videoView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    [self.view addSubview:self.videoView];
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [self setupVideoView];
+    [self addPlaybackGesture];
+}
+
+- (void)addPlaybackGesture
+{
+    self.playbackGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(_handleTap:)];
+    [self.view addGestureRecognizer:self.playbackGesture];
+}
+
+- (void)setupVideoView
+{
+    // load the playerLayer view
+    self.videoView.videoFillMode = AVLayerVideoGravityResizeAspect;
+    self.videoView.player = self.player;
+}
+
+- (PBJVideoPlayer *)player
+{
+    if (!_player)
+    {
+        _player = [[PBJVideoPlayer alloc] init];
+    }
+    return _player;
+}
+
+- (void)setPlayer:(PBJVideoPlayer *)player
+{
+    if (_player != player)
+    {
+        _player = player;
+        if ([self isViewLoaded])
+        {
+            [self setupVideoView];
+        }
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
-    
-    if (_player.playbackState == PBJVideoPlayerPlaybackStatePlaying)
-        [_player pause];
-}
 
-#pragma mark - UIResponder
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    if (_player.videoPath) {
-        
-        switch (_player.playbackState) {
-            case PBJVideoPlayerPlaybackStateStopped:
-            {
-                [_player playFromBeginning];
-                break;
-            }
-            case PBJVideoPlayerPlaybackStatePaused:
-            {
-                [_player playFromCurrentTime];
-                break;
-            }
-            case PBJVideoPlayerPlaybackStatePlaying:
-            case PBJVideoPlayerPlaybackStateFailed:
-            default:
-            {
-                [_player pause];
-                break;
-            }
-        }
-        
-    } else {
-        [super touchesEnded:touches withEvent:event];
+    if (self.player.playbackState == PBJVideoPlayerPlaybackStatePlaying)
+    {
+        [self.player pause];
     }
-    
 }
+
+#pragma mark - UIGestureRecognizer Action
 
 - (void)_handleTap:(UIGestureRecognizer *)gestureRecognizer
 {
-    if (_player.playbackState == PBJVideoPlayerPlaybackStatePlaying) {
-        [_player pause];
-    } else if (_player.playbackState == PBJVideoPlayerPlaybackStateStopped) {
-        [_player playFromBeginning];
-    } else {
-        [_player playFromCurrentTime];
+    switch (self.player.playbackState)
+    {
+        case PBJVideoPlayerPlaybackStateStopped:
+        {
+            [self.player playFromBeginning];
+            break;
+        }
+        case PBJVideoPlayerPlaybackStatePaused:
+        {
+            [self.player playFromCurrentTime];
+            break;
+        }
+        case PBJVideoPlayerPlaybackStatePlaying:
+        case PBJVideoPlayerPlaybackStateFailed:
+        default:
+        {
+            [self.player pause];
+            break;
+        }
     }
 }
 

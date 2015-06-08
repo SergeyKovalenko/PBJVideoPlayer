@@ -24,39 +24,41 @@
 
 #import <UIKit/UIKit.h>
 #import "PBJVideoView.h"
+@import CoreMedia;
 
-typedef NS_ENUM(NSInteger, PBJVideoPlayerPlaybackState) {
+typedef NS_ENUM(NSInteger, PBJVideoPlayerPlaybackState)
+{
     PBJVideoPlayerPlaybackStateStopped = 0,
     PBJVideoPlayerPlaybackStatePlaying,
     PBJVideoPlayerPlaybackStatePaused,
     PBJVideoPlayerPlaybackStateFailed,
 };
 
-typedef NS_ENUM(NSInteger, PBJVideoPlayerBufferingState) {
+typedef NS_ENUM(NSInteger, PBJVideoPlayerBufferingState)
+{
     PBJVideoPlayerBufferingStateUnknown = 0,
     PBJVideoPlayerBufferingStateReady,
     PBJVideoPlayerBufferingStateDelayed,
 };
 
 // PBJVideoPlayerController.view provides the interface for playing/streaming videos
-@protocol PBJVideoPlayerDelegate;
 @class AVAsset;
 
 @interface PBJVideoPlayer : NSObject
-
-@property (nonatomic, weak) id<PBJVideoPlayerDelegate> delegate;
 
 // if you want to set the AVAsset manually, you can do so here
 @property (nonatomic) AVAsset *asset;
 
 // if you'd rather specify a path to your video than create an AVAsset, set videoPath
-@property (nonatomic, copy) NSString *videoPath;
+@property (nonatomic, strong) NSURL *videoURL;
 
 @property (nonatomic, copy) NSString *videoFillMode; // default, AVLayerVideoGravityResizeAspect
-@property (nonatomic, readonly) PBJVideoView * videoView;
 
+// Settings
 @property (nonatomic) BOOL playbackLoops;
 @property (nonatomic) BOOL playbackFreezesAtEnd;
+@property (nonatomic) BOOL preloadAssetBeforePlaying;
+
 @property (nonatomic, readonly) PBJVideoPlayerPlaybackState playbackState;
 @property (nonatomic, readonly) PBJVideoPlayerBufferingState bufferingState;
 
@@ -69,17 +71,9 @@ typedef NS_ENUM(NSInteger, PBJVideoPlayerBufferingState) {
 
 - (void)playFromBeginning;
 - (void)playFromCurrentTime;
+- (void)seekToTime:(CMTime)time;
 - (void)pause;
 - (void)stop;
 
 @end
 
-@protocol PBJVideoPlayerDelegate <NSObject>
-@required
-- (void)videoPlayerReady:(PBJVideoPlayer *)videoPlayer;
-- (void)videoPlayerPlaybackStateDidChange:(PBJVideoPlayer *)videoPlayer;
-
-- (void)videoPlayerPlaybackWillStartFromBeginning:(PBJVideoPlayer *)videoPlayer;
-- (void)videoPlayerPlaybackDidEnd:(PBJVideoPlayer *)videoPlayer;
-
-@end

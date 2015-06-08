@@ -23,9 +23,16 @@
 //
 
 #import "PBJVideoView.h"
+#import "PBJVideoPlayer.h"
 
 #import <AVFoundation/AVFoundation.h>
 #import <QuartzCore/QuartzCore.h>
+
+@interface PBJVideoPlayer ()
+
+@property (nonatomic, strong) AVPlayer *player;
+
+@end
 
 @interface PBJVideoView ()
 {
@@ -37,36 +44,33 @@
 
 + (Class)layerClass
 {
-	return [AVPlayerLayer class];
+    return [AVPlayerLayer class];
 }
-
 #pragma mark - getters/setters
 
-- (void)setPlayer:(AVPlayer *)player
+- (void)setPlayer:(PBJVideoPlayer *)videoPlayer
 {
-    [(AVPlayerLayer *)[self layer] setPlayer:player];
-}
+    if (_player != videoPlayer)
+    {
+        _player = videoPlayer;
+    }
 
-- (AVPlayer *)player
-{
-    return [(AVPlayerLayer *)[self layer] player];
+    self.playerLayer.player = videoPlayer.player;
 }
 
 - (AVPlayerLayer *)playerLayer
 {
-    return (AVPlayerLayer *)self.layer;
+    return (AVPlayerLayer *) self.layer;
 }
 
 - (void)setVideoFillMode:(NSString *)videoFillMode
 {
-    AVPlayerLayer *playerLayer = (AVPlayerLayer *)[self layer];
-	playerLayer.videoGravity = videoFillMode;
+    self.playerLayer.videoGravity = videoFillMode;
 }
 
 - (NSString *)videoFillMode
 {
-    AVPlayerLayer *playerLayer = (AVPlayerLayer *)[self layer];
-	return playerLayer.videoGravity;
+    return self.playerLayer.videoGravity;
 }
 
 #pragma mark - init
@@ -74,7 +78,8 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
+    if (self)
+    {
         self.playerLayer.backgroundColor = [[UIColor blackColor] CGColor];
     }
     return self;

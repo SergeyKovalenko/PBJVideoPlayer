@@ -25,11 +25,10 @@
 
 #import "PBJViewController.h"
 #import "PBJVideoPlayerController.h"
+#import "PBJVideoPlayer.h"
 
-static NSString * const PBJViewControllerVideoPath = @"http://distilleryvesper7-3.ak.instagram.com/fdc51d8ea73611e3a15612e740d32ce3_101.mp4";
 
-@interface PBJViewController () <
-    PBJVideoPlayerControllerDelegate>
+@interface PBJViewController ()
 {
     PBJVideoPlayerController *_videoPlayerController;
     UIImageView *_playButton;
@@ -55,7 +54,6 @@ static NSString * const PBJViewControllerVideoPath = @"http://distilleryvesper7-
     self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
     _videoPlayerController = [[PBJVideoPlayerController alloc] init];
-    _videoPlayerController.delegate = self;
     _videoPlayerController.view.frame = self.view.bounds;
     
     [self addChildViewController:_videoPlayerController];
@@ -67,7 +65,7 @@ static NSString * const PBJViewControllerVideoPath = @"http://distilleryvesper7-
     [self.view addSubview:_playButton];
     [self.view bringSubviewToFront:_playButton];
     
-    _videoPlayerController.videoPath = PBJViewControllerVideoPath;
+    _videoPlayerController.player.videoURL = [NSURL URLWithString:@"http://distilleryvesper7-3.ak.instagram.com/fdc51d8ea73611e3a15612e740d32ce3_101.mp4"];
 }
 
 #pragma mark - PBJVideoPlayerControllerDelegate

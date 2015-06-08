@@ -24,10 +24,12 @@
 
 #import <UIKit/UIKit.h>
 
-#import "PBJVideoPlayer.h"
+@class PBJVideoPlayer;
 
 @interface PBJVideoPlayerController : UIViewController
 
-@property (nonatomic) PBJVideoPlayer* player;
+@property (nonatomic, strong) PBJVideoPlayer *player;
+
+@property (nonatomic, readonly) UITapGestureRecognizer *playbackGesture;
 
 @end
