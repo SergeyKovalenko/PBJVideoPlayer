@@ -39,6 +39,10 @@
  void * PBJVideoPlayerItemObserverContext = &PBJVideoPlayerItemObserverContext;
  void * PBJVideoPlayerLayerObserverContext = &PBJVideoPlayerLayerObserverContext;
 
+NSString * const PBJVideoPlayerStartPlayNotification = @"PBJVideoPlayerStartPlayNotification";
+NSString * const PBJVideoPlayerDidPauseNotification = @"PBJVideoPlayerDidPauseNotification";
+NSString * const PBJVideoPlayerDidStopNotification = @"PBJVideoPlayerDidStopNotification";
+
 // KVO player keys
 static NSString *const PBJVideoPlayerControllerTracksKey = @"tracks";
 static NSString *const PBJVideoPlayerControllerPlayableKey = @"playable";
