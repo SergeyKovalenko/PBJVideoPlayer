@@ -41,6 +41,10 @@ typedef NS_ENUM(NSInteger, PBJVideoPlayerBufferingState)
     PBJVideoPlayerBufferingStateDelayed,
 };
 
+FOUNDATION_EXTERN NSString * const PBJVideoPlayerStartPlayNotification;
+FOUNDATION_EXTERN NSString * const PBJVideoPlayerDidPauseNotification;
+FOUNDATION_EXTERN NSString * const PBJVideoPlayerDidStopNotification;
+
 // PBJVideoPlayerController.view provides the interface for playing/streaming videos
 @class AVAsset;
 

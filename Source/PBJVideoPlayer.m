@@ -433,6 +433,10 @@ static NSString *const PBJVideoPlayerControllerReadyForDisplay = @"readyForDispl
         strongSelf.playbackState = PBJVideoPlayerPlaybackStatePlaying;
         [strongSelf _videoPlayerAudioSessionActive:YES];
         [player play];
+        if (strongSelf)
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:PBJVideoPlayerStartPlayNotification object:strongSelf userInfo:nil];
+        }
     }];
 }
 
@@ -445,6 +449,10 @@ static NSString *const PBJVideoPlayerControllerReadyForDisplay = @"readyForDispl
         strongSelf.playbackState = PBJVideoPlayerPlaybackStatePlaying;
         [strongSelf _videoPlayerAudioSessionActive:YES];
         [player play];
+        if (strongSelf)
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:PBJVideoPlayerStartPlayNotification object:strongSelf userInfo:nil];
+        }
     }];
 }
 
@@ -471,6 +479,10 @@ static NSString *const PBJVideoPlayerControllerReadyForDisplay = @"readyForDispl
         [player pause];
         strongSelf.playbackState = PBJVideoPlayerPlaybackStatePaused;
         [strongSelf _videoPlayerAudioSessionActive:NO];
+        if (strongSelf)
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:PBJVideoPlayerDidPauseNotification object:strongSelf userInfo:nil];
+        }
     }];
 }
 
@@ -489,6 +501,10 @@ static NSString *const PBJVideoPlayerControllerReadyForDisplay = @"readyForDispl
         [player pause];
         strongSelf.playbackState = PBJVideoPlayerPlaybackStateStopped;
         [strongSelf _videoPlayerAudioSessionActive:NO];
+        if (strongSelf)
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:PBJVideoPlayerDidStopNotification object:strongSelf userInfo:nil];
+        }
     }];
 }
 
