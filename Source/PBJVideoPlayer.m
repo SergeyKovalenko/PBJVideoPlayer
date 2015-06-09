@@ -39,7 +39,8 @@
  void * PBJVideoPlayerItemObserverContext = &PBJVideoPlayerItemObserverContext;
  void * PBJVideoPlayerLayerObserverContext = &PBJVideoPlayerLayerObserverContext;
 
-NSString * const PBJVideoPlayerStartPlayNotification = @"PBJVideoPlayerStartPlayNotification";
+NSString * const PBJVideoPlayerWillStartPlayingNotification = @"PBJVideoPlayerWillStartPlayingNotification";
+NSString * const PBJVideoPlayerDidStartPlayingNotification = @"PBJVideoPlayerDidStartPlayingNotification";
 NSString * const PBJVideoPlayerDidPauseNotification = @"PBJVideoPlayerDidPauseNotification";
 NSString * const PBJVideoPlayerDidStopNotification = @"PBJVideoPlayerDidStopNotification";
 
@@ -430,6 +431,7 @@ static NSString *const PBJVideoPlayerControllerReadyForDisplay = @"readyForDispl
 - (void)playFromBeginning
 {
     DLog(@"playing from beginnging...");
+    [[NSNotificationCenter defaultCenter] postNotificationName:PBJVideoPlayerWillStartPlayingNotification object:self userInfo:nil];
     __weak typeof(self) weakSelf = self;
     [self accessPlayerWithBlock:^(AVPlayer *player) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -439,7 +441,7 @@ static NSString *const PBJVideoPlayerControllerReadyForDisplay = @"readyForDispl
         [player play];
         if (strongSelf)
         {
-            [[NSNotificationCenter defaultCenter] postNotificationName:PBJVideoPlayerStartPlayNotification object:strongSelf userInfo:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:PBJVideoPlayerDidStartPlayingNotification object:strongSelf userInfo:nil];
         }
     }];
 }
@@ -447,6 +449,7 @@ static NSString *const PBJVideoPlayerControllerReadyForDisplay = @"readyForDispl
 - (void)playFromCurrentTime
 {
     DLog(@"playing...");
+    [[NSNotificationCenter defaultCenter] postNotificationName:PBJVideoPlayerWillStartPlayingNotification object:self userInfo:nil];
     __weak typeof(self) weakSelf = self;
     [self accessPlayerWithBlock:^(AVPlayer *player) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
@@ -455,7 +458,7 @@ static NSString *const PBJVideoPlayerControllerReadyForDisplay = @"readyForDispl
         [player play];
         if (strongSelf)
         {
-            [[NSNotificationCenter defaultCenter] postNotificationName:PBJVideoPlayerStartPlayNotification object:strongSelf userInfo:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:PBJVideoPlayerDidStartPlayingNotification object:strongSelf userInfo:nil];
         }
     }];
 }
